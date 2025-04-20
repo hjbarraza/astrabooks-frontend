@@ -12,6 +12,7 @@ import type {
   Page,
   Author,
   FeaturedMedia,
+  Book,
 } from "./wordpress.d";
 
 // WordPress Config
@@ -433,6 +434,73 @@ export async function revalidateWordPressData(tags: string[] = ["wordpress"]) {
     console.error("Failed to revalidate WordPress data:", error);
     throw new Error("Failed to revalidate WordPress data");
   }
+}
+
+export async function getAllBooks(filterParams?: {
+  author?: string;
+  tag?: string;
+  category?: string;
+  search?: string;
+}): Promise<Book[]> {
+  const query: Record<string, unknown> = {
+    _embed: true,
+    per_page: 100,
+  };
+
+  if (filterParams?.search) {
+    query.search = filterParams.search;
+    if (filterParams?.author) {
+      query.author = filterParams.author;
+    }
+    if (filterParams?.tag) {
+      query.tags = filterParams.tag;
+    }
+    if (filterParams?.category) {
+      query.categories = filterParams.category;
+    }
+  } else {
+    if (filterParams?.author) {
+      query.author = filterParams.author;
+    }
+    if (filterParams?.tag) {
+      query.tags = filterParams.tag;
+    }
+    if (filterParams?.category) {
+      query.categories = filterParams.category;
+    }
+  }
+
+  const url = getUrl("/wp-json/wp/v2/books", query);
+  return wordpressFetch<Book[]>(url, {
+    next: {
+      ...defaultFetchOptions.next,
+      tags: ["wordpress", "books"],
+    },
+  });
+}
+
+export async function getBookBySlug(slug: string): Promise<Book> {
+  const url = getUrl("/wp-json/wp/v2/books", { slug });
+  const response = await wordpressFetch<Book[]>(url, {
+    next: {
+      ...defaultFetchOptions.next,
+      tags: ["wordpress", `book-${slug}`],
+    },
+  });
+  return response[0];
+}
+
+export async function getBooksByTagSlug(tagSlug: string): Promise<Book[]> {
+  const tag = await getTagBySlug(tagSlug);
+  const url = getUrl("/wp-json/wp/v2/books", { tags: tag.id });
+  const response = await wordpressFetch<Book[]>(url, {
+    next: {
+      ...defaultFetchOptions.next,
+      tags: ["wordpress", `books-tag-${tagSlug}`],
+    },
+  });
+
+  return response;
 }
 
 // Export error class for error handling

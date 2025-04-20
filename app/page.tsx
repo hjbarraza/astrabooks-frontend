@@ -6,7 +6,7 @@ import Balancer from "react-wrap-balancer";
 import Link from "next/link";
 
 // Icons
-import { File, Pen, Tag, Diamond, User, Folder } from "lucide-react";
+import { File, Pen, Tag, Diamond, User, Folder, BookOpen } from "lucide-react";
 import { WordPressIcon } from "@/components/icons/wordpress";
 import { NextJsIcon } from "@/components/icons/nextjs";
 
@@ -128,6 +128,18 @@ const ToDelete = () => {
             Categories{" "}
             <span className="block text-sm text-muted-foreground">
               Categories from your WordPress
+            </span>
+          </span>
+        </Link>
+        <Link
+          className="border h-48 bg-accent/50 rounded-lg p-4 flex flex-col justify-between hover:scale-[1.02] transition-all"
+          href="/books"
+        >
+          <BookOpen size={32} />
+          <span>
+            Books{" "}
+            <span className="block text-sm text-muted-foreground">
+              All books from your WordPress
             </span>
           </span>
         </Link>

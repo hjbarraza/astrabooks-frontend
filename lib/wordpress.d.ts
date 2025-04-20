@@ -92,6 +92,19 @@ export interface Page extends WPEntity {
   meta: Record<string, unknown>;
 }
 
+export interface Book extends WPEntity {
+  title: RenderedTitle;
+  content: RenderedContent;
+  excerpt: RenderedContent;
+  author: number;
+  featured_media: number;
+  comment_status: "open" | "closed";
+  ping_status: "open" | "closed";
+  tags?: number[];
+  categories?: number[];
+  meta: Record<string, unknown>;
+}
+
 // Taxonomy types
 interface Taxonomy {
   id: number;
